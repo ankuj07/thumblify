@@ -25,7 +25,7 @@ const startServer = async () => {
     await connectDB();
 
     // 2. Seed Templates (This will now work without 'req' and 'res')
-    await seedTemplates(); 
+   //  await seedTemplates(); 
 
     const app = express();
 
