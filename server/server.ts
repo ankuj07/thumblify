@@ -9,8 +9,6 @@ import ThumbnailRouter from './routes/ThumbnailRoutes.js';
 import UserRouter from './routes/UserRoutes.js';
 import CollectionRouter from './routes/CollectionRoutes.js';
 import TemplateRouter from './routes/TemplateRoutes.js';
-
-// ✅ Correct Import
 import { seedTemplates } from './controller/TemplateController.js';
 
 declare module 'express-session' {
@@ -21,15 +19,16 @@ declare module 'express-session' {
 }
 
 const startServer = async () => {
-    // 1. Connect to Database
     await connectDB();
-
-    // 2. Seed Templates (This will now work without 'req' and 'res')
-    await seedTemplates(); 
 
     const app = express();
 
-    // 3. Middlewares
+    try {
+        await seedTemplates();
+    } catch (err) {
+        console.warn("⚠️ Seeding skipped:", err);
+    }
+
     app.use(cors({
         origin: ['http://localhost:5173', 'http://localhost:3000'],
         credentials: true
@@ -39,9 +38,9 @@ const startServer = async () => {
         secret: (process.env.SESSION_SECRET as string) || 'fallback_secret',
         resave: false,
         saveUninitialized: false,
-        cookie: { 
+        cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true 
+            httpOnly: true
         },
         store: MongoStore.create({
             mongoUrl: process.env.MONGODB_URL as string,
@@ -51,7 +50,6 @@ const startServer = async () => {
 
     app.use(express.json());
 
-    // 4. Routes
     app.get('/', (req: Request, res: Response) => {
         res.send('Server is Live!');
     });
@@ -62,7 +60,6 @@ const startServer = async () => {
     app.use('/api/collection', CollectionRouter);
     app.use('/api/template', TemplateRouter);
 
-    // 5. Start Listening
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
         console.log(`🚀 Server is running at http://localhost:${port}`);
