@@ -9,15 +9,16 @@ import ThumbnailRouter from './routes/ThumbnailRoutes.js';
 import UserRouter from './routes/UserRoutes.js';
 import CollectionRouter from './routes/CollectionRoutes.js';
 import TemplateRouter from './routes/TemplateRoutes.js';
-// ✅ Correct Import
 import { seedTemplates } from './controller/TemplateController.js';
 const startServer = async () => {
-    // 1. Connect to Database
     await connectDB();
-    // 2. Seed Templates (This will now work without 'req' and 'res')
-    await seedTemplates();
     const app = express();
-    // 3. Middlewares
+    try {
+        await seedTemplates();
+    }
+    catch (err) {
+        console.warn("⚠️ Seeding skipped:", err);
+    }
     app.use(cors({
         origin: ['http://localhost:5173', 'http://localhost:3000'],
         credentials: true
@@ -36,7 +37,6 @@ const startServer = async () => {
         })
     }));
     app.use(express.json());
-    // 4. Routes
     app.get('/', (req, res) => {
         res.send('Server is Live!');
     });
@@ -45,7 +45,6 @@ const startServer = async () => {
     app.use('/api/user', UserRouter);
     app.use('/api/collection', CollectionRouter);
     app.use('/api/template', TemplateRouter);
-    // 5. Start Listening
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
         console.log(`🚀 Server is running at http://localhost:${port}`);
