@@ -29,10 +29,14 @@ const startServer = async () => {
         console.warn("⚠️ Seeding skipped:", err);
     }
 
-    app.use(cors({
-        origin: ['http://localhost:5173', 'http://localhost:3000'],
-        credentials: true
-    }));
+ app.use(cors({
+    origin: [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://thumblify-25wgboipn-ankuj07s-projects.vercel.app'
+    ],
+    credentials: true
+}));
 
     app.use(session({
         secret: (process.env.SESSION_SECRET as string) || 'fallback_secret',
