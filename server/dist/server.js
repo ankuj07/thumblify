@@ -23,7 +23,8 @@ const startServer = async () => {
         origin: [
             'http://localhost:5173',
             'http://localhost:3000',
-            'https://thumblify-25wgboipn-ankuj07s-projects.vercel.app'
+            'https://thumblify-25wgboipn-ankuj07s-projects.vercel.app',
+            'https://thumblify-woad-nine.vercel.app' // ← yeh add karo
         ],
         credentials: true
     }));
